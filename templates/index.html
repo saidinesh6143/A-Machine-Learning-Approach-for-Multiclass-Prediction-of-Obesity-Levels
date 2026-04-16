@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Obesity Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: 0.3s ease;
+        }
+
+        form input:focus,
+        form select:focus {
+            border-color: #74ebd5;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .underweight { background-color: #00bcd4; }      /* Blue */
+        .normal { background-color: #4caf50; }           /* Green */
+        .overweight { background-color: #ff9800; }       /* Orange */
+        .obese { background-color: #f44336; }            /* Red */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Multilevel Obesity Prediction</h2>
+        <form method="POST" action="/predict">
+            <label>Gender:</label>
+            <select name="Gender" required>
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label>Age:</label><input name="Age" type="number" required>
+
+            <label>Height (in m):</label><input name="Height" type="number" step="0.01" required>
+
+            <label>Weight (in kg):</label><input name="Weight" type="number" required>
+
+            <label>Family History of Overweight:</label>
+            <select name="family_history_with_overweight" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Frequent High Caloric Food Consumption (FAVC):</label>
+            <select name="FAVC" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Frequency of Vegetable Consumption (FCVC):</label><input name="FCVC" type="number" step="0.1" required>
+
+            <label>Number of Main Meals (NCP):</label><input name="NCP" type="number" step="0.1" required>
+
+            <label>Consumption of Food Between Meals (CAEC):</label>
+            <select name="CAEC" required>
+                <option value="">Select</option>
+                <option value="no">No</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Frequently">Frequently</option>
+                <option value="Always">Always</option>
+            </select>
+
+            <label>Smoke:</label>
+            <select name="SMOKE" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Daily Water Intake (CH2O):</label><input name="CH2O" type="number" step="0.1" required>
+
+            <label>Monitoring Caloric Consumption (SCC):</label>
+            <select name="SCC" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Physical Activity Frequency (FAF):</label><input name="FAF" type="number" step="0.1" required>
+
+            <label>Time Using Technology Devices (TUE):</label><input name="TUE" type="number" step="0.1" required>
+
+            <label>Alcohol Consumption (CALC):</label>
+            <select name="CALC" required>
+                <option value="">Select</option>
+                <option value="no">No</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Frequently">Frequently</option>
+                <option value="Always">Always</option>
+            </select>
+
+            <label>Transportation Used (MTRANS):</label>
+            <select name="MTRANS" required>
+                <option value="">Select</option>
+                <option value="Automobile">Automobile</option>
+                <option value="Motorbike">Motorbike</option>
+                <option value="Bike">Bike</option>
+                <option value="Public_Transportation">Public Transportation</option>
+                <option value="Walking">Walking</option>
+            </select>
+
+            <input type="submit" value="Predict">
+        </form>
+
+        {% if prediction_text %}
+            <div class="result 
+                {% if 'underweight' in prediction_text|lower %}underweight
+                {% elif 'normal' in prediction_text|lower %}normal
+                {% elif 'overweight' in prediction_text|lower %}overweight
+                {% elif 'obese' in prediction_text|lower %}obese
+                {% endif %}
+            ">
+                {{ prediction_text }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
